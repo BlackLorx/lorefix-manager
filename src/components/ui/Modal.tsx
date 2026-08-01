@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 type ModalProps = {
   open: boolean;
@@ -17,11 +17,8 @@ export default function Modal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-
       <div className="w-[900px] max-w-[95%] max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl">
-
         <div className="flex items-center justify-between border-b p-6">
-
           <h2 className="text-2xl font-bold">
             {title}
           </h2>
@@ -32,15 +29,12 @@ export default function Modal({
           >
             ✕
           </button>
-
         </div>
 
         <div className="p-6">
           {children}
         </div>
-
       </div>
-
     </div>
   );
 }
