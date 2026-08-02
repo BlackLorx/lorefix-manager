@@ -7,6 +7,9 @@ export async function getInventory() {
     .select("*")
     .order("nombre");
 
+  console.log("Inventory DATA:", data);
+  console.log("Inventory ERROR:", error);
+
   if (error) throw error;
 
   return data as Inventory[];
