@@ -3,6 +3,7 @@ import {
   Smartphone,
   Users,
   Package,
+  CalendarDays,
   Settings,
 } from "lucide-react";
 
@@ -11,6 +12,7 @@ import { NavLink } from "react-router-dom";
 const menu = [
   { icon: LayoutDashboard, name: "Dashboard", path: "/dashboard" },
   { icon: Smartphone, name: "Recepciones", path: "/recepciones" },
+  { icon: CalendarDays, name: "Citas", path: "/citas" },
   { icon: Users, name: "Clientes", path: "/clientes" },
   { icon: Package, name: "Inventario", path: "/inventario" },
   { icon: Settings, name: "Ajustes", path: "/ajustes" },
@@ -38,10 +40,9 @@ export default function Sidebar() {
               key={item.name}
               to={item.path}
               className={({ isActive }) =>
-                `mx-4 mb-2 flex items-center gap-4 rounded-xl px-4 py-3 transition ${
-                  isActive
-                    ? "bg-violet-600 text-white"
-                    : "hover:bg-violet-100"
+                `mx-4 mb-2 flex items-center gap-4 rounded-xl px-4 py-3 transition ${isActive
+                  ? "bg-violet-600 text-white"
+                  : "hover:bg-violet-100"
                 }`
               }
             >

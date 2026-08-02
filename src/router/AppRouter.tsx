@@ -12,6 +12,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import Recepciones from "../pages/Recepciones/Recepciones";
 import Clientes from "../pages/Clientes/Clientes";
 import Inventario from "../pages/Inventario/Inventario";
+import Citas from "../pages/Citas/Citas";
 import Ajustes from "../pages/Ajustes/Ajustes";
 import Seguimiento from "../pages/Seguimiento/Seguimiento";
 import Login from "../pages/Login/Login";
@@ -56,6 +57,7 @@ export default function AppRouter() {
         >
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/recepciones" element={<Recepciones />} />
+          <Route path="/citas" element={<Citas />} />
           <Route path="/clientes" element={<Clientes />} />
           <Route path="/inventario" element={<Inventario />} />
           <Route path="/ajustes" element={<Ajustes />} />
