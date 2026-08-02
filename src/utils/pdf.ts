@@ -1,8 +1,18 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import QRCode from "qrcode";
 import type { Repair } from "../types/Repair";
 
 export async function generarPDF(repair: Repair) {
   const pdfDoc = await PDFDocument.create();
+
+const seguimientoUrl = `https://lorefix-manager.vercel.app/seguimiento/${repair.codigo}`;
+
+const qrDataUrl = await QRCode.toDataURL(seguimientoUrl);
+
+const qrBytes = await fetch(qrDataUrl).then((r) => r.arrayBuffer());
+
+const qrImage = await pdfDoc.embedPng(qrBytes);
+
 
   const page = pdfDoc.addPage([595, 842]);
 
@@ -74,13 +84,33 @@ const { height } = page.getSize();
 
   y -= 80;
 
-  page.drawText("Gracias por confiar en LoreFix.", {
-    x: 50,
-    y,
-    size: 11,
-    font,
-    color: rgb(0.4, 0.4, 0.4),
-  });
+page.drawImage(qrImage, {
+  x: 390,
+  y: 70,
+  width: 120,
+  height: 120,
+});
 
+page.drawText("Escanea para consultar", {
+  x: 365,
+  y: 55,
+  size: 10,
+  font,
+});
+
+page.drawText("el estado de tu reparación", {
+  x: 355,
+  y: 42,
+  size: 10,
+  font,
+});
+
+page.drawText("Gracias por confiar en LoreFix.", {
+  x: 50,
+  y: 40,
+  size: 11,
+  font,
+  color: rgb(0.4, 0.4, 0.4),
+});
   return await pdfDoc.save();
 }

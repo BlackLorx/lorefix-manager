@@ -61,10 +61,16 @@ export default function ReceptionForm({ onSave }: Props) {
       .update({ codigo })
       .eq("id", data.id);
 
-    const repairCompleta: Repair = {
-      ...data,
-      codigo,
-    };
+const repairCompleta: Repair = {
+  ...data,
+  codigo,
+};
+
+await supabase.from("repair_history").insert({
+  repair_id: data.id,
+  estado: "Pendiente",
+  comentario: "Recepción creada",
+});
 
     try {
       // Generar PDF y subirlo a Storage
@@ -80,6 +86,25 @@ export default function ReceptionForm({ onSave }: Props) {
     } catch (e) {
       console.error("Error generando PDF", e);
     }
+
+const mensaje = `Hola ${repairCompleta.cliente} 
+
+Tu reparación ha sido registrada correctamente.
+
+Seguimiento:
+https://lorefix-manager.vercel.app/seguimiento/${repairCompleta.codigo}
+
+Resguardo:
+${repairCompleta.pdf_url ?? "No disponible"}
+
+Gracias por confiar en LoreFix.`;
+
+const telefonoWhatsapp = repairCompleta.telefono.replace(/\D/g, "");
+
+window.open(
+  `https://wa.me/34${telefonoWhatsapp}?text=${encodeURIComponent(mensaje)}`,
+  "_blank"
+);
 
     setSaving(false);
 
