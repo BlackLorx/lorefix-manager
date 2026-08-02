@@ -21,16 +21,20 @@ import PrivateRoute from "../auth/PrivateRoute";
 
 function PanelLayout() {
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100 overflow-hidden">
+
       <Sidebar />
 
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col overflow-hidden">
+
         <Header />
 
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>
+
       </div>
+
     </div>
   );
 }
