@@ -26,6 +26,9 @@ export default function EditRepairForm({
   async function guardarCambios() {
     setSaving(true);
 
+    // Guardamos el estado anterior
+    const estadoAnterior = repair.estado;
+
     const { error } = await supabase
       .from("repairs")
       .update({
@@ -40,12 +43,28 @@ export default function EditRepairForm({
       })
       .eq("id", data.id);
 
-    setSaving(false);
-
     if (error) {
+      setSaving(false);
       console.error(error);
       return;
     }
+
+if (estadoAnterior !== data.estado) {
+  const { error: historyError } = await supabase
+    .from("repair_history")
+    .insert({
+      repair_id: data.id,
+      estado: data.estado,
+      comentario: `Estado cambiado de "${estadoAnterior}" a "${data.estado}"`,
+    });
+
+  if (historyError) {
+    console.error("ERROR HISTORIAL:", historyError);
+    alert(JSON.stringify(historyError));
+  }
+}
+
+    setSaving(false);
 
     onSave({
       ...data,

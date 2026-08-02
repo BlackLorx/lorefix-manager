@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Repair } from "../../types/Repair";
 import { supabase } from "../../lib/supabase";
+import { generarResguardo } from "../../services/pdfService";
 
 type Props = {
   onSave: (repair: Repair) => void;
@@ -13,8 +14,11 @@ export default function ReceptionForm({ onSave }: Props) {
   const [modelo, setModelo] = useState("");
   const [imei, setImei] = useState("");
   const [averia, setAveria] = useState("");
+  const [saving, setSaving] = useState(false);
 
   async function guardar() {
+    setSaving(true);
+
     const repair: Repair = {
       id: Date.now(),
       cliente,
@@ -27,7 +31,7 @@ export default function ReceptionForm({ onSave }: Props) {
       estado: "Pendiente",
     };
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("repairs")
       .insert({
         cliente: repair.cliente,
@@ -38,20 +42,52 @@ export default function ReceptionForm({ onSave }: Props) {
         imei: repair.imei,
         averia: repair.averia,
         estado: repair.estado,
-      });
+      })
+      .select()
+      .single();
 
     if (error) {
       console.error(error);
       alert("Error al guardar en Supabase");
+      setSaving(false);
       return;
     }
 
-    onSave(repair);
+    // Generar código
+    const codigo = `LF-${String(data.id).padStart(6, "0")}`;
+
+    await supabase
+      .from("repairs")
+      .update({ codigo })
+      .eq("id", data.id);
+
+    const repairCompleta: Repair = {
+      ...data,
+      codigo,
+    };
+
+    try {
+      // Generar PDF y subirlo a Storage
+      const pdf_url = await generarResguardo(repairCompleta);
+
+      // Guardar URL en la reparación
+      await supabase
+        .from("repairs")
+        .update({ pdf_url })
+        .eq("id", data.id);
+
+      repairCompleta.pdf_url = pdf_url;
+    } catch (e) {
+      console.error("Error generando PDF", e);
+    }
+
+    setSaving(false);
+
+    onSave(repairCompleta);
   }
 
   return (
     <div className="space-y-5">
-
       <input
         placeholder="Cliente"
         className="w-full rounded-xl border p-3"
@@ -97,11 +133,11 @@ export default function ReceptionForm({ onSave }: Props) {
 
       <button
         onClick={guardar}
-        className="rounded-xl bg-violet-600 px-6 py-3 text-white hover:bg-violet-700"
+        disabled={saving}
+        className="w-full rounded-xl bg-violet-600 px-6 py-3 text-white transition hover:bg-violet-700 disabled:opacity-50"
       >
-        Guardar reparación
+        {saving ? "Guardando..." : "Guardar reparación"}
       </button>
-
     </div>
   );
 }

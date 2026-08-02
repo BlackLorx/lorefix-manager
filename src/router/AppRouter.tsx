@@ -8,27 +8,40 @@ import Recepciones from "../pages/Recepciones/Recepciones";
 import Clientes from "../pages/Clientes/Clientes";
 import Inventario from "../pages/Inventario/Inventario";
 import Ajustes from "../pages/Ajustes/Ajustes";
+import Seguimiento from "../pages/Seguimiento/Seguimiento";
+
+function Panel() {
+  return (
+    <div className="flex h-screen bg-gray-100">
+      <Sidebar />
+
+      <div className="flex flex-1 flex-col">
+        <Header />
+
+        <main className="flex-1 overflow-auto">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/recepciones" element={<Recepciones />} />
+            <Route path="/clientes" element={<Clientes />} />
+            <Route path="/inventario" element={<Inventario />} />
+            <Route path="/ajustes" element={<Ajustes />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
+  );
+}
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
-      <div className="flex h-screen bg-gray-100">
-        <Sidebar />
+      <Routes>
+        {/* Página pública */}
+        <Route path="/seguimiento" element={<Seguimiento />} />
 
-        <div className="flex flex-col flex-1">
-          <Header />
-
-          <main className="flex-1 overflow-auto">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/recepciones" element={<Recepciones />} />
-              <Route path="/clientes" element={<Clientes />} />
-              <Route path="/inventario" element={<Inventario />} />
-              <Route path="/ajustes" element={<Ajustes />} />
-            </Routes>
-          </main>
-        </div>
-      </div>
+        {/* Panel privado (por ahora sin protección) */}
+        <Route path="/*" element={<Panel />} />
+      </Routes>
     </BrowserRouter>
   );
 }
