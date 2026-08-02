@@ -5,12 +5,15 @@ import {
   Package,
   CalendarDays,
   Settings,
-  Menu,
   X,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+};
 
 const menu = [
   { icon: LayoutDashboard, name: "Dashboard", path: "/dashboard" },
@@ -21,25 +24,17 @@ const menu = [
   { icon: Settings, name: "Ajustes", path: "/ajustes" },
 ];
 
-export default function Sidebar() {
-  const [open, setOpen] = useState(false);
-
+export default function Sidebar({
+  open,
+  onClose,
+}: Props) {
   return (
     <>
-      {/* Botón móvil */}
-
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed left-4 top-4 z-50 rounded-lg bg-violet-600 p-2 text-white shadow-lg md:hidden"
-      >
-        <Menu size={24} />
-      </button>
-
-      {/* Fondo oscuro */}
+      {/* Fondo oscuro móvil */}
 
       {open && (
         <div
-          onClick={() => setOpen(false)}
+          onClick={onClose}
           className="fixed inset-0 z-40 bg-black/40 md:hidden"
         />
       )}
@@ -74,7 +69,7 @@ export default function Sidebar() {
           </div>
 
           <button
-            onClick={() => setOpen(false)}
+            onClick={onClose}
             className="rounded-lg p-2 hover:bg-gray-100 md:hidden"
           >
             <X size={22} />
@@ -91,7 +86,7 @@ export default function Sidebar() {
               <NavLink
                 key={item.name}
                 to={item.path}
-                onClick={() => setOpen(false)}
+                onClick={onClose}
                 className={({ isActive }) =>
                   `mx-4 mb-2 flex items-center gap-4 rounded-xl px-4 py-3 transition ${isActive
                     ? "bg-violet-600 text-white"

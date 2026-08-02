@@ -1,13 +1,18 @@
-type ButtonProps = {
-  children: React.ReactNode;
-  onClick?: () => void;
-};
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-export default function Button({ children, onClick }: ButtonProps) {
+type ButtonProps = {
+  children: ReactNode;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
+
+export default function Button({
+  children,
+  className = "",
+  ...props
+}: ButtonProps) {
   return (
     <button
-      onClick={onClick}
-      className="rounded-xl bg-violet-600 px-5 py-3 font-semibold text-white shadow hover:bg-violet-700 transition"
+      {...props}
+      className={`rounded-xl bg-violet-600 px-5 py-3 font-semibold text-white shadow transition hover:bg-violet-700 ${className}`}
     >
       {children}
     </button>
