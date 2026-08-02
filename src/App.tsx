@@ -8,7 +8,9 @@ function AppContent() {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <p className="text-xl font-semibold">Cargando...</p>
+<p className="text-3xl font-bold text-red-600">
+  VERSION NUEVA
+</p>
       </div>
     );
   }
