@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,14 +23,15 @@ export default function Login() {
 
     if (error) {
       alert("Correo o contraseña incorrectos");
+      return;
     }
+
+    navigate("/dashboard");
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-violet-100 to-white">
-
       <div className="w-full max-w-md rounded-3xl bg-white p-10 shadow-xl">
-
         <h1 className="mb-2 text-center text-4xl font-bold">
           LoreFix Manager
         </h1>
@@ -40,7 +44,6 @@ export default function Login() {
           onSubmit={login}
           className="space-y-5"
         >
-
           <input
             type="email"
             placeholder="Correo electrónico"
@@ -63,11 +66,8 @@ export default function Login() {
           >
             {loading ? "Entrando..." : "Iniciar sesión"}
           </button>
-
         </form>
-
       </div>
-
     </div>
   );
 }

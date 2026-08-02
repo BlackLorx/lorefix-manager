@@ -1,4 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Outlet,
+} from "react-router-dom";
 
 import Sidebar from "../components/layout/Sidebar";
 import Header from "../components/layout/Header";
@@ -9,8 +14,11 @@ import Clientes from "../pages/Clientes/Clientes";
 import Inventario from "../pages/Inventario/Inventario";
 import Ajustes from "../pages/Ajustes/Ajustes";
 import Seguimiento from "../pages/Seguimiento/Seguimiento";
+import Login from "../pages/Login/Login";
 
-function Panel() {
+import PrivateRoute from "../auth/PrivateRoute";
+
+function PanelLayout() {
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
@@ -19,13 +27,7 @@ function Panel() {
         <Header />
 
         <main className="flex-1 overflow-auto">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/recepciones" element={<Recepciones />} />
-            <Route path="/clientes" element={<Clientes />} />
-            <Route path="/inventario" element={<Inventario />} />
-            <Route path="/ajustes" element={<Ajustes />} />
-          </Routes>
+          <Outlet />
         </main>
       </div>
     </div>
@@ -36,11 +38,29 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+
+        {/* Login */}
+        <Route path="/" element={<Login />} />
+
         {/* Página pública */}
         <Route path="/seguimiento" element={<Seguimiento />} />
+        <Route path="/seguimiento/:codigo" element={<Seguimiento />} />
 
-        {/* Panel privado (por ahora sin protección) */}
-        <Route path="/*" element={<Panel />} />
+        {/* Área privada */}
+        <Route
+          element={
+            <PrivateRoute>
+              <PanelLayout />
+            </PrivateRoute>
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/recepciones" element={<Recepciones />} />
+          <Route path="/clientes" element={<Clientes />} />
+          <Route path="/inventario" element={<Inventario />} />
+          <Route path="/ajustes" element={<Ajustes />} />
+        </Route>
+
       </Routes>
     </BrowserRouter>
   );

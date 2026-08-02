@@ -32,7 +32,6 @@ export default function Seguimiento() {
     }
 
     setRepair(data);
-    setRepair(data);
 
 const { data: historyData } = await supabase
   .from("repair_history")
