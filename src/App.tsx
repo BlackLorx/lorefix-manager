@@ -15,7 +15,15 @@ function AppContent() {
     );
   }
 
-  return session ? <AppRouter /> : <Login />;
+  return (
+  <>
+    <div className="bg-red-600 p-3 text-center font-bold text-white">
+      VERSION NUEVA
+    </div>
+
+    {session ? <AppRouter /> : <Login />}
+  </>
+);
 }
 
 export default function App() {
