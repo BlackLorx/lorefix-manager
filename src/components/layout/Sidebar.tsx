@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../auth/Auth";
 
 type Props = {
   open: boolean;
@@ -28,6 +29,7 @@ export default function Sidebar({
   open,
   onClose,
 }: Props) {
+  const { role } = useAuth();
   return (
     <>
       {/* Fondo oscuro móvil */}
@@ -79,30 +81,32 @@ export default function Sidebar({
 
         <nav className="mt-6">
 
-          {menu.map((item) => {
-            const Icon = item.icon;
+          {menu
+            .filter((item) => role === "admin" || item.name !== "Ajustes")
+            .map((item) => {
+              const Icon = item.icon;
 
-            return (
-              <NavLink
-                key={item.name}
-                to={item.path}
-                onClick={onClose}
-                className={({ isActive }) =>
-                  `mx-4 mb-2 flex items-center gap-4 rounded-xl px-4 py-3 transition ${isActive
-                    ? "bg-violet-600 text-white"
-                    : "hover:bg-violet-100"
-                  }`
-                }
-              >
-                <Icon size={22} />
+              return (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    `mx-4 mb-2 flex items-center gap-4 rounded-xl px-4 py-3 transition ${isActive
+                      ? "bg-violet-600 text-white"
+                      : "hover:bg-violet-100"
+                    }`
+                  }
+                >
+                  <Icon size={22} />
 
-                <span className="font-medium">
-                  {item.name}
-                </span>
+                  <span className="font-medium">
+                    {item.name}
+                  </span>
 
-              </NavLink>
-            );
-          })}
+                </NavLink>
+              );
+            })}
 
         </nav>
 
