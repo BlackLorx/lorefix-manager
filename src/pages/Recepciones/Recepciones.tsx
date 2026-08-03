@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Repair } from "../../types/Repair";
 
 import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../auth/Auth";
 
 import Button from "../../components/ui/Button";
 import RepairTable from "../../components/tables/RepairTable";
@@ -18,6 +19,8 @@ import {
 } from "lucide-react";
 
 export default function Recepciones() {
+  const { role } = useAuth();
+
   const [open, setOpen] = useState(false);
   const [repairs, setRepairs] = useState<Repair[]>([]);
   const [selectedRepair, setSelectedRepair] = useState<Repair | null>(null);
@@ -83,20 +86,33 @@ export default function Recepciones() {
 
   return (
     <div className="p-10">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-bold">
-            Recepciones
-          </h1>
+      <div className="mb-8">
 
-          <p className="mt-2 text-gray-500">
-            Gestiona todas las reparaciones del taller.
-          </p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
+          <div>
+
+            <h1 className="text-2xl font-bold md:text-3xl xl:text-4xl">
+              Recepciones
+            </h1>
+
+            <p className="mt-2 text-sm text-gray-500 md:text-base">
+              Gestiona todas las reparaciones del taller.
+            </p>
+
+          </div>
+
+          {role === "admin" && (
+            <Button
+              onClick={() => setOpen(true)}
+              className="w-full md:w-auto"
+            >
+              + Nueva recepción
+            </Button>
+          )}
+
         </div>
 
-        <Button onClick={() => setOpen(true)}>
-          + Nueva recepción
-        </Button>
       </div>
 
       {/* Tarjetas resumen */}
@@ -208,7 +224,11 @@ export default function Recepciones() {
 
       <RepairTable
         repairs={repairsFiltradas}
-        onOpen={abrirReparacion}
+        onOpen={
+          role === "admin"
+            ? abrirReparacion
+            : () => { }
+        }
       />
 
       <Modal
@@ -219,19 +239,21 @@ export default function Recepciones() {
         <ReceptionForm onSave={guardarReparacion} />
       </Modal>
 
-      <Modal
-        open={selectedRepair !== null}
-        title="Ficha de reparación"
-        onClose={() => setSelectedRepair(null)}
-      >
-        {selectedRepair && (
-          <EditRepairForm
-            repair={selectedRepair}
-            onSave={actualizarReparacion}
-            onDelete={eliminarReparacion}
-          />
-        )}
-      </Modal>
+      {role === "admin" && (
+        <Modal
+          open={selectedRepair !== null}
+          title="Ficha de reparación"
+          onClose={() => setSelectedRepair(null)}
+        >
+          {selectedRepair && (
+            <EditRepairForm
+              repair={selectedRepair}
+              onSave={actualizarReparacion}
+              onDelete={eliminarReparacion}
+            />
+          )}
+        </Modal>
+      )}
     </div>
   );
 }

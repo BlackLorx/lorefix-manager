@@ -1,4 +1,5 @@
 import type { Repair } from "../../types/Repair";
+import { useAuth } from "../../auth/Auth";
 
 type Props = {
   repairs: Repair[];
@@ -16,6 +17,8 @@ const estadoStyles: Record<string, string> = {
 };
 
 export default function RepairTable({ repairs, onOpen }: Props) {
+  const { role } = useAuth();
+
   return (
     <>
       {/* Tabla escritorio */}
@@ -71,12 +74,14 @@ export default function RepairTable({ repairs, onOpen }: Props) {
                   </td>
 
                   <td className="p-4">
-                    <button
-                      onClick={() => onOpen(repair)}
-                      className="rounded-lg bg-violet-600 px-4 py-2 text-sm text-white transition hover:bg-violet-700"
-                    >
-                      Abrir
-                    </button>
+                    {role === "admin" && (
+                      <button
+                        onClick={() => onOpen(repair)}
+                        className="rounded-lg bg-violet-600 px-4 py-2 text-sm text-white transition hover:bg-violet-700"
+                      >
+                        Abrir
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))
@@ -146,12 +151,14 @@ export default function RepairTable({ repairs, onOpen }: Props) {
 
               </div>
 
-              <button
-                onClick={() => onOpen(repair)}
-                className="mt-5 w-full rounded-xl bg-violet-600 py-3 font-semibold text-white transition hover:bg-violet-700"
-              >
-                Abrir reparación
-              </button>
+              {role === "admin" && (
+                <button
+                  onClick={() => onOpen(repair)}
+                  className="mt-5 w-full rounded-xl bg-violet-600 py-3 font-semibold text-white transition hover:bg-violet-700"
+                >
+                  Abrir reparación
+                </button>
+              )}
 
             </div>
           ))
