@@ -1,3 +1,4 @@
+import { useAuth } from "../../auth/Auth";
 import { useEffect, useState } from "react";
 import type { Inventory } from "../../types/Inventory";
 
@@ -26,6 +27,7 @@ export default function Inventario() {
 
   const [selectedItem, setSelectedItem] =
     useState<Inventory | null>(null);
+  const { role } = useAuth();
 
   useEffect(() => {
     cargarInventario();
@@ -108,50 +110,53 @@ export default function Inventario() {
     );
   });
 
-  return (    <div className="p-10">
+  return (<div className="p-10">
 
-      <div className="mb-8 flex items-center justify-between">
+    <div className="mb-8 flex items-center justify-between">
 
-        <div>
-          <h1 className="text-4xl font-bold">
-            Inventario
-          </h1>
+      <div>
+        <h1 className="text-4xl font-bold">
+          Inventario
+        </h1>
 
-          <p className="mt-2 text-gray-500">
-            Gestiona el almacén del taller.
-          </p>
-        </div>
+        <p className="mt-2 text-gray-500">
+          Gestiona el almacén del taller.
+        </p>
+      </div>
 
+      {role === "admin" && (
         <Button onClick={() => setOpen(true)}>
           + Nuevo artículo
         </Button>
+      )}
 
-      </div>
+    </div>
 
-      <InventoryStats items={items} />
+    <InventoryStats items={items} />
 
-      <InventorySearch
-        value={search}
-        onChange={setSearch}
+    <InventorySearch
+      value={search}
+      onChange={setSearch}
+    />
+
+    <InventoryTable
+      items={itemsFiltrados}
+      onOpen={role === "admin" ? abrirArticulo : () => { }}
+      onIncrease={role === "admin" ? sumarStock : async () => { }}
+      onDecrease={role === "admin" ? restarStock : async () => { }}
+    />
+
+    <Modal
+      open={open}
+      title="Nuevo artículo"
+      onClose={() => setOpen(false)}
+    >
+      <InventoryForm
+        onSave={guardarArticulo}
       />
+    </Modal>
 
-      <InventoryTable
-        items={itemsFiltrados}
-        onOpen={abrirArticulo}
-        onIncrease={sumarStock}
-        onDecrease={restarStock}
-      />
-
-      <Modal
-        open={open}
-        title="Nuevo artículo"
-        onClose={() => setOpen(false)}
-      >
-        <InventoryForm
-          onSave={guardarArticulo}
-        />
-      </Modal>
-
+    {role === "admin" && (
       <Modal
         open={selectedItem !== null}
         title="Editar artículo"
@@ -165,7 +170,8 @@ export default function Inventario() {
           />
         )}
       </Modal>
+    )}
 
-    </div>
+  </div>
   );
 }

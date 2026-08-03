@@ -9,6 +9,7 @@ import AppointmentTable from "../../components/tables/AppointmentTable";
 import EditAppointmentForm from "../../components/forms/EditAppointmentForm";
 
 import { getAppointments } from "../../services/appointmentService";
+import { useAuth } from "../../auth/Auth";
 
 import {
     CalendarDays,
@@ -24,6 +25,9 @@ export default function Citas() {
     const [open, setOpen] = useState(false);
     const [selectedAppointment, setSelectedAppointment] =
         useState<Appointment | null>(null);
+    const { role } = useAuth();
+
+
     useEffect(() => {
         cargarCitas();
     }, []);
@@ -92,9 +96,11 @@ export default function Citas() {
                     </p>
                 </div>
 
-                <Button onClick={() => setOpen(true)}>
-                    + Nueva cita
-                </Button>
+                {role === "admin" && (
+                    <Button onClick={() => setOpen(true)}>
+                        + Nueva cita
+                    </Button>
+                )}
 
             </div>
 
@@ -218,7 +224,7 @@ export default function Citas() {
 
             <AppointmentTable
                 appointments={citasFiltradas}
-                onOpen={abrirCita}
+                onOpen={role === "admin" ? abrirCita : () => { }}
             />
 
             <Modal
@@ -230,20 +236,22 @@ export default function Citas() {
                     onSave={guardarCita}
                 />
             </Modal>
-        
-            <Modal
-                open={selectedAppointment !== null}
-                title="Editar cita"
-                onClose={() => setSelectedAppointment(null)}
-            >
-                {selectedAppointment && (
-                    <EditAppointmentForm
-                        appointment={selectedAppointment}
-                        onSave={actualizarCita}
-                        onDelete={eliminarCita}
-                    />
-                )}
-            </Modal>
+
+            {role === "admin" && (
+                <Modal
+                    open={selectedAppointment !== null}
+                    title="Editar cita"
+                    onClose={() => setSelectedAppointment(null)}
+                >
+                    {selectedAppointment && (
+                        <EditAppointmentForm
+                            appointment={selectedAppointment}
+                            onSave={actualizarCita}
+                            onDelete={eliminarCita}
+                        />
+                    )}
+                </Modal>
+            )}
         </div>
     );
 }

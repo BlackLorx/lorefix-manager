@@ -1,5 +1,6 @@
 import type { Inventory } from "../../types/Inventory";
 import InventoryActions from "../inventory/InventoryActions";
+import { useAuth } from "../../auth/Auth";
 
 type Props = {
   items: Inventory[];
@@ -14,6 +15,8 @@ export default function InventoryTable({
   onIncrease,
   onDecrease,
 }: Props) {
+  const { role } = useAuth();
+
   return (
     <div className="overflow-hidden rounded-2xl border bg-white shadow-sm">
       <table className="w-full">
@@ -66,13 +69,12 @@ export default function InventoryTable({
                 <td className="p-4 text-center">
 
                   <span
-                    className={`rounded-full px-3 py-1 font-semibold ${
-                      item.stock === 0
-                        ? "bg-red-600 text-white"
-                        : item.stock <= item.stock_minimo
+                    className={`rounded-full px-3 py-1 font-semibold ${item.stock === 0
+                      ? "bg-red-600 text-white"
+                      : item.stock <= item.stock_minimo
                         ? "bg-red-100 text-red-700"
                         : "bg-green-100 text-green-700"
-                    }`}
+                      }`}
                   >
                     {item.stock}
                   </span>
@@ -84,14 +86,14 @@ export default function InventoryTable({
                 </td>
 
                 <td className="p-4">
-
-                  <InventoryActions
-                    item={item}
-                    onEdit={onOpen}
-                    onIncrease={onIncrease}
-                    onDecrease={onDecrease}
-                  />
-
+                  {role === "admin" && (
+                    <InventoryActions
+                      item={item}
+                      onEdit={onOpen}
+                      onIncrease={onIncrease}
+                      onDecrease={onDecrease}
+                    />
+                  )}
                 </td>
 
               </tr>
