@@ -1,5 +1,6 @@
 export interface Repair {
   id: number;
+
   codigo?: string;
 
   cliente: string;
@@ -13,6 +14,13 @@ export interface Repair {
   averia: string;
 
   estado: string;
+
+  price: number;
+
+  payment_status:
+    | "Pendiente"
+    | "Pagado"
+    | "Parcial";
 
   pdf_url?: string;
 }

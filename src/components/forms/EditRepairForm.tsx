@@ -40,6 +40,8 @@ export default function EditRepairForm({
         imei: data.imei,
         averia: data.averia,
         estado: data.estado,
+        price: data.price,
+        payment_status: data.payment_status,
       })
       .eq("id", data.id);
 
@@ -49,20 +51,20 @@ export default function EditRepairForm({
       return;
     }
 
-if (estadoAnterior !== data.estado) {
-  const { error: historyError } = await supabase
-    .from("repair_history")
-    .insert({
-      repair_id: data.id,
-      estado: data.estado,
-      comentario: `Estado cambiado de "${estadoAnterior}" a "${data.estado}"`,
-    });
+    if (estadoAnterior !== data.estado) {
+      const { error: historyError } = await supabase
+        .from("repair_history")
+        .insert({
+          repair_id: data.id,
+          estado: data.estado,
+          comentario: `Estado cambiado de "${estadoAnterior}" a "${data.estado}"`,
+        });
 
-  if (historyError) {
-    console.error("ERROR HISTORIAL:", historyError);
-    alert(JSON.stringify(historyError));
-  }
-}
+      if (historyError) {
+        console.error("ERROR HISTORIAL:", historyError);
+        alert(JSON.stringify(historyError));
+      }
+    }
 
     setSaving(false);
 
@@ -135,6 +137,17 @@ if (estadoAnterior !== data.estado) {
         onChange={(e) => update("averia", e.target.value)}
       />
 
+      <input
+        type="number"
+        className="w-full rounded-xl border p-3"
+        placeholder="Precio (€)"
+        value={data.price}
+        onChange={(e) =>
+          update("price", Number(e.target.value))
+        }
+      />
+
+
       <select
         className="w-full rounded-xl border p-3"
         value={data.estado}
@@ -149,6 +162,29 @@ if (estadoAnterior !== data.estado) {
         <option>Reparando</option>
         <option>Terminado</option>
         <option>Entregado</option>
+      </select>
+
+      <select
+        className="w-full rounded-xl border p-3"
+        value={data.payment_status}
+        onChange={(e) =>
+          update(
+            "payment_status",
+            e.target.value as Repair["payment_status"]
+          )
+        }
+      >
+        <option value="Pendiente">
+          Pendiente de pago
+        </option>
+
+        <option value="Pagado">
+          Pagado
+        </option>
+
+        <option value="Parcial">
+          Pago parcial
+        </option>
       </select>
 
       <div className="flex gap-3">

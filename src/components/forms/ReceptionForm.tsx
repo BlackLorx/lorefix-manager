@@ -14,6 +14,12 @@ export default function ReceptionForm({ onSave }: Props) {
   const [modelo, setModelo] = useState("");
   const [imei, setImei] = useState("");
   const [averia, setAveria] = useState("");
+
+  const [price, setPrice] = useState(0);
+  const [paymentStatus, setPaymentStatus] = useState<
+    "Pendiente" | "Pagado" | "Parcial"
+  >("Pendiente");
+
   const [saving, setSaving] = useState(false);
 
   async function guardar() {
@@ -29,6 +35,8 @@ export default function ReceptionForm({ onSave }: Props) {
       imei,
       averia,
       estado: "Pendiente",
+      price,
+      payment_status: paymentStatus,
     };
 
     const { data, error } = await supabase
@@ -42,6 +50,8 @@ export default function ReceptionForm({ onSave }: Props) {
         imei: repair.imei,
         averia: repair.averia,
         estado: repair.estado,
+        price: repair.price,
+        payment_status: repair.payment_status,
       })
       .select()
       .single();
@@ -61,16 +71,16 @@ export default function ReceptionForm({ onSave }: Props) {
       .update({ codigo })
       .eq("id", data.id);
 
-const repairCompleta: Repair = {
-  ...data,
-  codigo,
-};
+    const repairCompleta: Repair = {
+      ...data,
+      codigo,
+    };
 
-await supabase.from("repair_history").insert({
-  repair_id: data.id,
-  estado: "Pendiente",
-  comentario: "Recepción creada",
-});
+    await supabase.from("repair_history").insert({
+      repair_id: data.id,
+      estado: "Pendiente",
+      comentario: "Recepción creada",
+    });
 
     try {
       // Generar PDF y subirlo a Storage
@@ -87,7 +97,7 @@ await supabase.from("repair_history").insert({
       console.error("Error generando PDF", e);
     }
 
-const mensaje = `Hola ${repairCompleta.cliente} 
+    const mensaje = `Hola ${repairCompleta.cliente} 
 
 Tu reparación ha sido registrada correctamente.
 
@@ -99,12 +109,12 @@ ${repairCompleta.pdf_url ?? "No disponible"}
 
 Gracias por confiar en LoreFix.`;
 
-const telefonoWhatsapp = repairCompleta.telefono.replace(/\D/g, "");
+    const telefonoWhatsapp = repairCompleta.telefono.replace(/\D/g, "");
 
-window.open(
-  `https://wa.me/34${telefonoWhatsapp}?text=${encodeURIComponent(mensaje)}`,
-  "_blank"
-);
+    window.open(
+      `https://wa.me/34${telefonoWhatsapp}?text=${encodeURIComponent(mensaje)}`,
+      "_blank"
+    );
 
     setSaving(false);
 
@@ -156,6 +166,39 @@ window.open(
         onChange={(e) => setAveria(e.target.value)}
       />
 
+      <input
+        type="number"
+        placeholder="Precio (€)"
+        className="w-full rounded-xl border p-3"
+        value={price}
+        onChange={(e) => setPrice(Number(e.target.value))}
+      />
+
+      <select
+        value={paymentStatus}
+        onChange={(e) =>
+          setPaymentStatus(
+            e.target.value as
+            | "Pendiente"
+            | "Pagado"
+            | "Parcial"
+          )
+        }
+        className="w-full rounded-xl border p-3"
+      >
+        <option value="Pendiente">
+          Pendiente de pago
+        </option>
+
+        <option value="Pagado">
+          Pagado
+        </option>
+
+        <option value="Parcial">
+          Pago parcial
+        </option>
+      </select>
+
       <button
         onClick={guardar}
         disabled={saving}
@@ -163,6 +206,7 @@ window.open(
       >
         {saving ? "Guardando..." : "Guardar reparación"}
       </button>
+
     </div>
   );
 }

@@ -4,7 +4,10 @@ import { useAuth } from "../../auth/Auth";
 import { supabase } from "../../lib/supabase";
 
 import Modal from "../../components/ui/Modal";
+import ThemeToggle from "../../components/ui/ThemeToggle";
 import ChangePasswordForm from "../../components/forms/ChangePasswordForm";
+import ShopSettingsForm from "../../components/forms/ShopSettingsForm";
+
 
 import {
   UserCircle,
@@ -131,9 +134,23 @@ export default function Ajustes() {
           Apariencia
         </h2>
 
-        <p className="text-gray-500">
-          Próximamente podrás activar el modo oscuro y cambiar el color principal de la aplicación.
-        </p>
+        <div className="flex items-center justify-between">
+
+          <div>
+
+            <p className="font-semibold">
+              Tema
+            </p>
+
+            <p className="text-gray-500">
+              Cambia entre modo claro y oscuro.
+            </p>
+
+          </div>
+
+          <ThemeToggle />
+
+        </div>
 
       </div>
 
@@ -145,9 +162,7 @@ export default function Ajustes() {
           Taller
         </h2>
 
-        <p className="text-gray-500">
-          Aquí podrás configurar el nombre del taller, dirección, teléfono, correo y logotipo.
-        </p>
+        <ShopSettingsForm />
 
       </div>
 

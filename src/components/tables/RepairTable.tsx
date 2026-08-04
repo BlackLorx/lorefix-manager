@@ -31,6 +31,8 @@ export default function RepairTable({ repairs, onOpen }: Props) {
               <th className="p-4 text-left">Cliente</th>
               <th className="p-4 text-left">Dispositivo</th>
               <th className="p-4 text-left">Estado</th>
+              <th className="p-4 text-left">Precio</th>
+              <th className="p-4 text-left">Pago</th>
               <th className="p-4 text-left">IMEI</th>
               <th className="p-4 text-left">Acciones</th>
             </tr>
@@ -66,6 +68,23 @@ export default function RepairTable({ repairs, onOpen }: Props) {
                         }`}
                     >
                       {repair.estado}
+                    </span>
+                  </td>
+
+                  <td className="p-4 font-semibold text-green-600">
+                    {repair.price.toFixed(2)} €
+                  </td>
+
+                  <td className="p-4">
+                    <span
+                      className={`rounded-full px-3 py-1 text-sm font-semibold ${repair.payment_status === "Pagado"
+                        ? "bg-green-100 text-green-700"
+                        : repair.payment_status === "Parcial"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-yellow-100 text-yellow-700"
+                        }`}
+                    >
+                      {repair.payment_status}
                     </span>
                   </td>
 
@@ -137,6 +156,24 @@ export default function RepairTable({ repairs, onOpen }: Props) {
                   <p>
                     {repair.dispositivo}
                   </p>
+                </div>
+
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-gray-500">
+                    Precio
+                  </p>
+
+                  <p className="font-semibold text-green-600">
+                    {repair.price.toFixed(2)} €
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-gray-500">
+                    Pago
+                  </p>
+
+                  <p>{repair.payment_status}</p>
                 </div>
 
                 <div>
