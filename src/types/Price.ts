@@ -1,19 +1,42 @@
 export interface Price {
   id: number;
 
-  brand: string;
 
-  device: string;
+  // Compatibilidad antigua
+  brand?: string;
+  device?: string;
+
+
+  // Nueva estructura
+  brand_id: number;
+  device_id: number;
+
+
+  category: string;
 
   service: string;
 
+
   price: number;
 
-  description?: string;
+
+  description: string;
+
 
   public: boolean;
 
   active: boolean;
 
-  created_at?: string;
+
+  // Datos obtenidos mediante JOIN
+  brands?: {
+    id: number;
+    name: string;
+  };
+
+
+  devices?: {
+    id: number;
+    name: string;
+  };
 }
