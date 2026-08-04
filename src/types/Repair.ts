@@ -22,5 +22,13 @@ export interface Repair {
     | "Pagado"
     | "Parcial";
 
+  payment_method:
+    | "Efectivo"
+    | "Tarjeta"
+    | "Bizum"
+    | "Transferencia";
+
+  paid_at?: string | null;
+
   pdf_url?: string;
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import type { Repair } from "../../types/Repair";
 
 
@@ -22,6 +23,8 @@ import {
 export default function Recepciones() {
   const { role } = useAuth();
 
+  const [searchParams] = useSearchParams();
+
   const [open, setOpen] = useState(false);
   const [repairs, setRepairs] = useState<Repair[]>([]);
   const [selectedRepair, setSelectedRepair] = useState<Repair | null>(null);
@@ -43,6 +46,17 @@ export default function Recepciones() {
     }
 
     setRepairs(data as Repair[]);
+    const repairId = Number(searchParams.get("repair"));
+
+    if (repairId) {
+      const repair = (data as Repair[]).find(
+        (r) => r.id === repairId
+      );
+
+      if (repair) {
+        setSelectedRepair(repair);
+      }
+    }
   }
 
   function guardarReparacion(repair: Repair) {

@@ -29,6 +29,11 @@ export default function EditRepairForm({
     // Guardamos el estado anterior
     const estadoAnterior = repair.estado;
 
+    const paidAt =
+      data.payment_status === "Pagado" && !data.paid_at
+        ? new Date().toISOString()
+        : data.paid_at;
+
     const { error } = await supabase
       .from("repairs")
       .update({
@@ -42,6 +47,8 @@ export default function EditRepairForm({
         estado: data.estado,
         price: data.price,
         payment_status: data.payment_status,
+        payment_method: data.payment_method,
+        paid_at: paidAt,
       })
       .eq("id", data.id);
 
@@ -70,6 +77,7 @@ export default function EditRepairForm({
 
     onSave({
       ...data,
+      paid_at: paidAt,
       dispositivo: `${data.marca} ${data.modelo}`,
     });
   }
@@ -184,6 +192,33 @@ export default function EditRepairForm({
 
         <option value="Parcial">
           Pago parcial
+        </option>
+      </select>
+
+      <select
+        className="w-full rounded-xl border p-3"
+        value={data.payment_method}
+        onChange={(e) =>
+          update(
+            "payment_method",
+            e.target.value as Repair["payment_method"]
+          )
+        }
+      >
+        <option value="Efectivo">
+          Efectivo
+        </option>
+
+        <option value="Tarjeta">
+          Tarjeta
+        </option>
+
+        <option value="Bizum">
+          Bizum
+        </option>
+
+        <option value="Transferencia">
+          Transferencia
         </option>
       </select>
 

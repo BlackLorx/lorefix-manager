@@ -6,6 +6,7 @@ import {
   CalendarDays,
   Settings,
   X,
+  BadgeEuro,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -21,6 +22,7 @@ const menu = [
   { icon: Smartphone, name: "Recepciones", path: "/recepciones" },
   { icon: CalendarDays, name: "Citas", path: "/citas" },
   { icon: Users, name: "Clientes", path: "/clientes" },
+  { icon: BadgeEuro, name: "Precios", path: "/precios" },
   { icon: Package, name: "Inventario", path: "/inventario" },
   { icon: Settings, name: "Ajustes", path: "/ajustes" },
 ];

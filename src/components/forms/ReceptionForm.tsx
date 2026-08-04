@@ -37,6 +37,11 @@ export default function ReceptionForm({ onSave }: Props) {
       estado: "Pendiente",
       price,
       payment_status: paymentStatus,
+      payment_method: "Efectivo",
+      paid_at:
+        paymentStatus === "Pagado"
+          ? new Date().toISOString()
+          : null,
     };
 
     const { data, error } = await supabase
@@ -52,6 +57,8 @@ export default function ReceptionForm({ onSave }: Props) {
         estado: repair.estado,
         price: repair.price,
         payment_status: repair.payment_status,
+        payment_method: repair.payment_method,
+        paid_at: repair.paid_at,
       })
       .select()
       .single();
