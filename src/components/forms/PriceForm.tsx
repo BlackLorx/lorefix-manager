@@ -11,28 +11,20 @@ import {
 
 import { getBrands } from "../../services/brandService";
 import { getDevices } from "../../services/deviceService";
+import { getServiceCatalog } from "../../services/serviceCatalogService";
 
+type ServiceItem = {
+  id: number;
+  category: string;
+  name: string;
+  default_price: number;
+};
 
 type Props = {
   onSave: (price: Price) => void;
   editingPrice?: Price | null;
 };
 
-
-const CATEGORIES = [
-  "Pantallas",
-  "Baterías",
-  "Cámaras",
-  "Audio",
-  "Carga",
-  "Carcasa",
-  "Botones",
-  "Face ID / Touch ID",
-  "Software",
-  "Diagnóstico",
-  "Limpieza",
-  "Otros",
-];
 
 
 export default function PriceForm({
@@ -43,6 +35,7 @@ export default function PriceForm({
 
   const [brands, setBrands] = useState<Brand[]>([]);
   const [devices, setDevices] = useState<Device[]>([]);
+  const [services, setServices] = useState<ServiceItem[]>([]);
 
 
   const [selectedBrand, setSelectedBrand] =
@@ -101,10 +94,25 @@ export default function PriceForm({
   useEffect(() => {
 
     cargarMarcas();
+    cargarServicios();
 
   }, []);
 
+  async function cargarServicios() {
 
+    try {
+
+      const data = await getServiceCatalog();
+
+      setServices(data as ServiceItem[]);
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+  }
 
   async function cargarMarcas() {
 
@@ -207,6 +215,13 @@ export default function PriceForm({
 
     }
 
+    const brand = brands.find(
+      (b) => b.id === selectedBrand
+    );
+
+    const device = devices.find(
+      (d) => d.id === selectedDevice
+    );
 
     setSaving(true);
 
@@ -220,19 +235,16 @@ export default function PriceForm({
           ...editingPrice,
 
           brand_id: selectedBrand,
-
           device_id: selectedDevice,
 
+          brand: brand?.name ?? "",
+          device: device?.name ?? "",
+
           category,
-
           service,
-
           price,
-
           description,
-
           public: isPublic,
-
           active,
         };
 
@@ -253,23 +265,19 @@ export default function PriceForm({
         const nuevo = await createPrice({
 
           brand_id: selectedBrand,
-
           device_id: selectedDevice,
 
+          brand: brand?.name ?? "",
+          device: device?.name ?? "",
+
           category,
-
           service,
-
           price,
-
           description,
-
           public: isPublic,
-
           active,
 
         } as Price);
-
 
         onSave(
           nuevo
@@ -355,43 +363,48 @@ export default function PriceForm({
 
 
 
+
+
+
+
       <select
         className="w-full rounded-xl border p-3"
-        value={category}
-        onChange={(e) =>
-          setCategory(
-            e.target.value
-          )
-        }
+        value={service}
+        onChange={(e) => {
+
+          const selected = services.find(
+            (s) => s.name === e.target.value
+          );
+
+          setService(e.target.value);
+
+          if (selected) {
+
+            setCategory(selected.category);
+
+            setPrice(selected.default_price);
+
+          }
+
+        }}
       >
 
-        {CATEGORIES.map((item) => (
+        <option value="">
+          Selecciona un servicio
+        </option>
+
+        {services.map((item) => (
 
           <option
-            key={item}
-            value={item}
+            key={item.id}
+            value={item.name}
           >
-
-            {item}
-
+            {item.category} · {item.name}
           </option>
 
         ))}
 
       </select>
-
-
-
-      <input
-        placeholder="Servicio"
-        className="w-full rounded-xl border p-3"
-        value={service}
-        onChange={(e) =>
-          setService(
-            e.target.value
-          )
-        }
-      />
 
 
 

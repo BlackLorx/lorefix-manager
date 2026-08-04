@@ -8,6 +8,9 @@ import ThemeToggle from "../../components/ui/ThemeToggle";
 import ChangePasswordForm from "../../components/forms/ChangePasswordForm";
 import ShopSettingsForm from "../../components/forms/ShopSettingsForm";
 
+import { importCatalog } from "../../services/catalogImporter";
+import { importServiceCatalog } from "../../services/importServiceCatalog";
+import { generatePriceCatalog } from "../../services/generatePriceCatalog";
 
 import {
   UserCircle,
@@ -17,6 +20,7 @@ import {
 } from "lucide-react";
 
 export default function Ajustes() {
+
   const { session, role } = useAuth();
 
   const [openPassword, setOpenPassword] = useState(false);
@@ -25,14 +29,83 @@ export default function Ajustes() {
     await supabase.auth.signOut();
   }
 
+  async function importarCatalogo() {
+
+    const confirmar = window.confirm(
+      "Se importarán todas las marcas y dispositivos base. ¿Continuar?"
+    );
+
+    if (!confirmar) return;
+
+    try {
+
+      await importCatalog();
+
+      alert("Catálogo importado correctamente.");
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Error al importar el catálogo.");
+
+    }
+
+  }
+
+  async function importarServicios() {
+
+    const confirmar = window.confirm(
+      "Se crearán todos los servicios base para todas las marcas y dispositivos. ¿Continuar?"
+    );
+
+    if (!confirmar) return;
+
+    try {
+
+      await importServiceCatalog();
+
+      alert("Servicios importados correctamente.");
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Error al importar los servicios.");
+
+    }
+
+  }
+  async function generarPrecios() {
+
+    const confirmar = window.confirm(
+      "Se generarán automáticamente todos los precios base. ¿Continuar?"
+    );
+
+    if (!confirmar) return;
+
+    try {
+
+      await generatePriceCatalog();
+
+      alert("Precios generados correctamente.");
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Error al generar los precios.");
+
+    }
+
+  }
   return (
+
     <div className="mx-auto max-w-5xl p-10">
 
       <h1 className="mb-8 text-4xl font-bold">
         Ajustes
       </h1>
-
-      {/* Cuenta */}
 
       <div className="rounded-2xl border bg-white p-8 shadow-sm">
 
@@ -76,7 +149,9 @@ export default function Ajustes() {
                 Email
               </p>
 
-              <p>{session?.user.email}</p>
+              <p>
+                {session?.user.email}
+              </p>
 
             </div>
 
@@ -107,17 +182,19 @@ export default function Ajustes() {
 
             <button
               onClick={() => setOpenPassword(true)}
-              className="rounded-xl border border-violet-600 px-6 py-3 font-semibold text-violet-600 transition hover:bg-violet-50"
+              className="rounded-xl border border-violet-600 px-6 py-3 font-semibold text-violet-600 hover:bg-violet-50"
             >
               Cambiar contraseña
             </button>
 
             <button
               onClick={cerrarSesion}
-              className="flex items-center gap-2 rounded-xl bg-red-600 px-6 py-3 font-semibold text-white transition hover:bg-red-700"
+              className="flex items-center gap-2 rounded-xl bg-red-600 px-6 py-3 font-semibold text-white hover:bg-red-700"
             >
               <LogOut size={18} />
+
               Cerrar sesión
+
             </button>
 
           </div>
@@ -125,8 +202,6 @@ export default function Ajustes() {
         </div>
 
       </div>
-
-      {/* Apariencia */}
 
       <div className="mt-8 rounded-2xl border bg-white p-8 shadow-sm">
 
@@ -154,8 +229,6 @@ export default function Ajustes() {
 
       </div>
 
-      {/* Taller */}
-
       <div className="mt-8 rounded-2xl border bg-white p-8 shadow-sm">
 
         <h2 className="mb-6 text-2xl font-bold">
@@ -165,8 +238,6 @@ export default function Ajustes() {
         <ShopSettingsForm />
 
       </div>
-
-      {/* Usuarios */}
 
       <div className="mt-8 rounded-2xl border bg-white p-8 shadow-sm">
 
@@ -179,8 +250,6 @@ export default function Ajustes() {
         </p>
 
       </div>
-
-      {/* Sistema */}
 
       <div className="mt-8 rounded-2xl border bg-white p-8 shadow-sm">
 
@@ -206,6 +275,41 @@ export default function Ajustes() {
 
       </div>
 
+      <div className="mt-8 rounded-2xl border bg-white p-8 shadow-sm">
+
+        <h2 className="mb-2 text-2xl font-bold">
+          Catálogo
+        </h2>
+
+        <p className="mb-6 text-gray-500">
+          Importa automáticamente las marcas, dispositivos y servicios base.
+        </p>
+
+        <div className="flex flex-wrap gap-4">
+
+          <button
+            onClick={importarCatalogo}
+            className="rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white transition hover:bg-violet-700"
+          >
+            ⚡ Importar catálogo
+          </button>
+
+          <button
+            onClick={importarServicios}
+            className="rounded-xl bg-green-600 px-6 py-3 font-semibold text-white transition hover:bg-green-700"
+          >
+            📦 Importar servicios
+          </button>
+          <button
+            onClick={generarPrecios}
+            className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+          >
+            💰 Generar precios base
+          </button>
+        </div>
+
+      </div>
+
       <Modal
         open={openPassword}
         title="Cambiar contraseña"
@@ -217,5 +321,7 @@ export default function Ajustes() {
       </Modal>
 
     </div>
+
   );
+
 }

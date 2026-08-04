@@ -75,11 +75,12 @@ export async function createPrice(
     .insert({
 
       brand_id: price.brand_id,
-
       device_id: price.device_id,
 
-      category: price.category,
+      brand: price.brand,
+      device: price.device,
 
+      category: price.category,
       service: price.service,
 
       price: price.price,
@@ -87,7 +88,6 @@ export async function createPrice(
       description: price.description,
 
       public: price.public,
-
       active: price.active,
 
     })
@@ -129,8 +129,10 @@ export async function updatePrice(
     .update({
 
       brand_id: price.brand_id,
-
       device_id: price.device_id,
+
+      brand: price.brand,
+      device: price.device,
 
       category: price.category,
 
