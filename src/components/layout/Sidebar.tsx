@@ -22,7 +22,7 @@ const menu = [
   { icon: Smartphone, name: "Recepciones", path: "/recepciones" },
   { icon: CalendarDays, name: "Citas", path: "/citas" },
   { icon: Users, name: "Clientes", path: "/clientes" },
-  { icon: BadgeEuro, name: "Precios", path: "/precios" },
+  { icon: BadgeEuro, name: "Precios", path: "/admin/precios" },
   { icon: Package, name: "Inventario", path: "/inventario" },
   { icon: Settings, name: "Ajustes", path: "/ajustes" },
 ];

@@ -37,19 +37,21 @@ export default function Precios() {
         }
     }
 
-    function guardarServicio(price: Price) {
-        if (editingPrice) {
-            setPrices((prev) =>
-                prev.map((p) =>
-                    p.id === price.id ? price : p
-                )
-            );
-        } else {
-            setPrices((prev) => [price, ...prev]);
+    async function guardarServicio() {
+
+        try {
+
+            await cargarPrecios();
+
+            setEditingPrice(null);
+            setOpen(false);
+
+        } catch (error) {
+
+            console.error(error);
+
         }
 
-        setEditingPrice(null);
-        setOpen(false);
     }
 
     async function eliminarServicio(id: number) {
@@ -103,19 +105,33 @@ export default function Precios() {
 
                 </div>
 
-                {role === "admin" && (
+                <div className="flex gap-3">
 
-                    <button
-                        onClick={() => {
-                            setEditingPrice(null);
-                            setOpen(true);
-                        }}
-                        className="rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white hover:bg-violet-700"
+                    <a
+                        href="/precios"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-xl border border-violet-600 px-6 py-3 font-semibold text-violet-600 hover:bg-violet-50"
                     >
-                        + Nuevo servicio
-                    </button>
+                        🌐 Ver página pública
+                    </a>
 
-                )}
+
+                    {role === "admin" && (
+
+                        <button
+                            onClick={() => {
+                                setEditingPrice(null);
+                                setOpen(true);
+                            }}
+                            className="rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white hover:bg-violet-700"
+                        >
+                            + Nuevo servicio
+                        </button>
+
+                    )}
+
+                </div>
 
             </div>
 
